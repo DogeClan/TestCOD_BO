@@ -1,3 +1,4 @@
+
 # Use a lightweight base image
 FROM debian:latest
 
@@ -38,7 +39,7 @@ RUN mkdir -p /usr/local/bin && \
          '# Start websockify to provide web access to the VNC server\n' \
          'websockify --web=/usr/share/novnc 6080 localhost:5900 &\n' \
          '# Launch Dolphin Emulator headlessly\n' \
-         'dolphin-emu --exec="$@"\n' \
+         'dolphin-emu \n' \
          'wait' > /usr/local/bin/start-dolphin && \
     chmod +x /usr/local/bin/start-dolphin
 
