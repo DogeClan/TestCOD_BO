@@ -22,23 +22,19 @@ RUN apt-get update && apt-get install -y \
     libmediainfo0v5 \
     libpcrecpp0v5 \
     libzen0v5 \
+    megacmd \
     --no-install-recommends && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install MegaCMD for downloading files from Mega
+# Download MegaCMD for downloading files from Mega
 RUN wget https://mega.nz/linux/repo/Debian_12/amd64/megacmd-Debian_12_amd64.deb && \
     sudo apt install "$PWD/megacmd-Debian_12_amd64.deb" && \
     rm megacmd-Debian_12_amd64.deb
 
-# Download files from Mega using mega-get
+# Download the ISO files from Mega
 RUN mega-get https://mega.nz/file/MSkw2CqQ#Mg7l7x7-bllT2h1S6OxK4TuNSFN1Mn-VzKJtvf6Fzcs && \
     mega-get https://mega.nz/file/EC9B2Cib#sFfnZZv-ukJ8KbkUEPoSEOTlae7jCj_Ws2vigNij6_8
-
-# Move downloaded files to the Dolphin game directory (adjust the path as necessary)
-RUN mkdir -p /games/dolphin && \
-    mv /root/mega/MSkw2CqQ* /games/dolphin/ && \
-    mv /root/mega/EC9B2Cib* /games/dolphin/
 
 # Create the directory for noVNC
 RUN mkdir -p /usr/share/novnc && \
@@ -54,8 +50,8 @@ RUN mkdir -p /usr/local/bin && \
          'x11vnc -forever -nopw -shared -rfbport 5900 -display :99 &\n' \
          '# Start websockify to provide web access to the VNC server\n' \
          'websockify --web=/usr/share/novnc 6080 localhost:5900 &\n' \
-         '# Launch Dolphin Emulator with the specified game files\n' \
-         'dolphin-emu /games/dolphin/MSkw2CqQ* /games/dolphin/EC9B2Cib* &\n' \
+         '# Launch Dolphin Emulator with the specified game files directly from the root\n' \
+         'dolphin-emu /root/MSkw2CqQ* /root/EC9B2Cib* &\n' \
          'wait' > /usr/local/bin/start-dolphin && \
     chmod +x /usr/local/bin/start-dolphin
 
