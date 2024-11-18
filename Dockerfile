@@ -22,9 +22,9 @@ RUN apt-get update && apt-get install -y \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Add the Dolphin Emulator PPA manually
+# Add the Dolphin Emulator PPA manually (using the correct PPA)
 RUN wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x6A6D97523F50ABC2 | apt-key add - && \
-    echo "deb http://ppa.launchpad.net/dolphin-emu/ppa/ubuntu focal main" > /etc/apt/sources.list.d/dolphin-emu.list && \
+    echo "deb http://ppa.launchpad.net/cobalt2727/dolphin-emu/ubuntu focal main" > /etc/apt/sources.list.d/dolphin-emu.list && \
     apt-get update && \
     apt-get install -y dolphin-emu && \
     apt-get clean && \
