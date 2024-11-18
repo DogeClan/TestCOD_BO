@@ -36,13 +36,16 @@ RUN mkdir -p /usr/local/bin && \
          '# Start Xvfb for a virtual display\n' \
          'Xvfb :99 -screen 0 1024x768x24 &\n' \
          '# Start x11vnc to expose the virtual display\n' \
-         'x11vnc -forever -usepw -shared -rfbport 5900 -display :99 &\n' \
+         'x11vnc -forever -nopw -shared -rfbport 5900 -display :99 &\n' \
          '# Start websockify to provide web access to the VNC server\n' \
          'websockify --web=/usr/share/novnc 6080 localhost:5900 &\n' \
          '# Launch Dolphin Emulator headlessly\n' \
-         'flatpak run org.DolphinEmu.dolphin-emu "$@" &\n' \
+         'flatpak run org.DolphinEmu.dolphin-emu "$@"\n' \
          'wait' > /usr/local/bin/start-dolphin && \
     chmod +x /usr/local/bin/start-dolphin
+
+# Set the noVNC HTML directory
+RUN ln -s /usr/share/novnc/vnc.html /usr/share/novnc/index.html
 
 # Expose VNC and noVNC ports
 EXPOSE 5900 6080
