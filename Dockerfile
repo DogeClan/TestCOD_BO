@@ -1,3 +1,4 @@
+
 # Use a lightweight base image
 FROM debian:latest
 
@@ -7,6 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 # Update and install required dependencies
 RUN apt-get update && apt-get install -y \
+    dolphin-emu \
     software-properties-common \
     gnupg \
     wget \
@@ -22,17 +24,9 @@ RUN apt-get update && apt-get install -y \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Add the Dolphin Emulator PPA manually with updated method for PGP key
-RUN wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x6A6D97523F50ABC2 | gpg --dearmor -o /usr/share/keyrings/dolphin-emu-archive-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/dolphin-emu-archive-keyring.gpg] http://ppa.launchpad.net/cobalt2727/dolphin-emu/ubuntu focal main" > /etc/apt/sources.list.d/dolphin-emu.list && \
-    apt-get update && \
-    apt-get install -y dolphin-emu && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
 # Create the directory for noVNC
 RUN mkdir -p /usr/share/novnc && \
-    wget -qO- https://github.com/novnc/noVNC/archive/refs/heads/main.tar.gz | tar xz --strip-components=1 -C /usr/share/novnc && \
+    wget -qO- https://github.com/novnc/noVNC/archive/refs/tags/v1.5.0.tar.gz | tar xz --strip-components=1 -C /usr/share/novnc && \
     ln -s /usr/share/novnc/utils/websockify /usr/local/bin/websockify
 
 # Create a start script for Dolphin Emulator with XVFB and noVNC
