@@ -22,9 +22,9 @@ RUN apt-get update && apt-get install -y \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Add the Dolphin Emulator PPA manually (using the correct PPA)
-RUN wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x6A6D97523F50ABC2 | apt-key add - && \
-    echo "deb http://ppa.launchpad.net/cobalt2727/dolphin-emu/ubuntu focal main" > /etc/apt/sources.list.d/dolphin-emu.list && \
+# Add the Dolphin Emulator PPA manually with updated method for PGP key
+RUN wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x6A6D97523F50ABC2 | gpg --dearmor -o /usr/share/keyrings/dolphin-emu-archive-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/dolphin-emu-archive-keyring.gpg] http://ppa.launchpad.net/cobalt2727/dolphin-emu/ubuntu focal main" > /etc/apt/sources.list.d/dolphin-emu.list && \
     apt-get update && \
     apt-get install -y dolphin-emu && \
     apt-get clean && \
