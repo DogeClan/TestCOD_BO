@@ -1,4 +1,3 @@
-
 # Use a lightweight base image
 FROM debian:latest
 
@@ -42,6 +41,9 @@ RUN mkdir -p /usr/local/bin && \
          'dolphin-emu --exec="$@"\n' \
          'wait' > /usr/local/bin/start-dolphin && \
     chmod +x /usr/local/bin/start-dolphin
+
+# Ensure dolphin-emu command is accessible by ensuring it's in PATH
+RUN ln -s /usr/games/dolphin-emu /usr/local/bin/dolphin-emu
 
 # Set the noVNC HTML directory
 RUN ln -s /usr/share/novnc/vnc.html /usr/share/novnc/index.html
