@@ -8,6 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # Update and install required dependencies
 RUN apt-get update && apt-get install -y \
     dolphin-emu \
+    unzip \
     software-properties-common \
     gnupg \
     wget \
@@ -22,19 +23,21 @@ RUN apt-get update && apt-get install -y \
     libmediainfo0v5 \
     libpcrecpp0v5 \
     libzen0v5 \
-    megacmd \
     --no-install-recommends && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Download MegaCMD for downloading files from Mega
-RUN wget https://mega.nz/linux/repo/Debian_12/amd64/megacmd-Debian_12_amd64.deb && \
-    sudo apt install "$PWD/megacmd-Debian_12_amd64.deb" && \
-    rm megacmd-Debian_12_amd64.deb
+# Create a directory for games
+RUN mkdir -p /games
 
-# Download the ISO files from Mega
-RUN mega-get https://mega.nz/file/MSkw2CqQ#Mg7l7x7-bllT2h1S6OxK4TuNSFN1Mn-VzKJtvf6Fzcs && \
-    mega-get https://mega.nz/file/EC9B2Cib#sFfnZZv-ukJ8KbkUEPoSEOTlae7jCj_Ws2vigNij6_8
+WORKDIR /games
+
+# Download the game files
+RUN wget -q https://github.com/DogeClan/TestCOD_BO/releases/download/LOZ/Legend.of.Zelda.The.-.The.Wind.Waker.USA.1.zip && \
+    unzip -q Legend.of.Zelda.The.-.The.Wind.Waker.USA.1.zip && \
+    rm Legend.of.Zelda.The.-.The.Wind.Waker.USA.1.zip
+
+RUN ln -s /usr/games/dolphin-emu /usr/local/bin/dolphin-emu
 
 # Create the directory for noVNC
 RUN mkdir -p /usr/share/novnc && \
@@ -50,8 +53,8 @@ RUN mkdir -p /usr/local/bin && \
          'x11vnc -forever -nopw -shared -rfbport 5900 -display :99 &\n' \
          '# Start websockify to provide web access to the VNC server\n' \
          'websockify --web=/usr/share/novnc 6080 localhost:5900 &\n' \
-         '# Launch Dolphin Emulator with the specified game files directly from the root\n' \
-         'dolphin-emu /root/MSkw2CqQ* /root/EC9B2Cib* &\n' \
+         '# Launch Dolphin Emulator with the specified game files\n' \
+         'dolphin-emu "/games/Legend of Zelda, The - The Wind Waker (USA).rvz"\n' \
          'wait' > /usr/local/bin/start-dolphin && \
     chmod +x /usr/local/bin/start-dolphin
 
